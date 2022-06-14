@@ -1,0 +1,166 @@
+#!/bin/sh
+# mksh
+# Make new shell script executable file from template.
+
+mksh_main() {
+	scriptpath="` realpath "$0" `"  
+	scriptname="` basename "$scriptpath" `"
+	scriptdir="` dirname "$scriptpath" `"
+
+	e_args=16
+	e_exists=17
+
+	[ $# -lt 1 ] && mksh_usage && return 16
+
+	while getopts h opt
+	do
+		case $opt in
+			h) __SCRIPTNAMESC___usage && return ;;
+			*) _invalid_opt ;;
+		esac
+	done
+
+	newscript="$1"
+	shift
+
+	newscriptname="` basename "$newscript" `"
+	newscriptnamesc="` echo "$newscriptname" | sed 's/-/_/g' `"
+
+	if [ -f "$newscript" ]
+	then
+		_error "File already exists: $newscript"
+		return $e_exists
+	fi
+
+	date="` date +'%Y-%m-%d %H:%M:%S %Z' `"
+
+	sed '1,/^__TEMPLATE__/d' "$scriptpath" | \
+		sed "
+			s/__SCRIPTNAME__/$newscriptname/g;
+			s/__SCRIPTNAMESC__/$newscriptnamesc/g;
+			s/__DATE__/$date/g;
+		" \
+		> "$newscript"
+
+	chmod a+x "$newscript"
+	_echo "$newscript"
+}
+
+mksh_usage() {
+cat <<USAGE
+Usage: $scriptname scriptfile
+
+Make new shell script executable file from template.
+
+Available options:
+
+	-h        Show this help screen.
+
+USAGE
+}
+
+_echo() {
+	echo "$@"
+}
+
+_error() {
+	_echo "$@" >&2
+}
+
+_invalid_opt() {
+	_error "Invalid option: $opt"
+	_echo
+	mksh_usage
+	exit $e_args
+}
+
+mksh_main "$@"
+exit
+
+__TEMPLATE__
+#!/bin/sh
+# __SCRIPTNAME__
+# __DATE__
+
+__SCRIPTNAMESC___main() {
+	scriptpath="` realpath "$0" `"  
+	scriptname="` basename "$scriptpath" `"
+	scriptdir="` dirname "$scriptpath" `"
+	#rootdir="` dirname "$scriptdir" `"
+
+	e_args=16
+
+	while getopts h opt
+	do
+		case $opt in
+			h) __SCRIPTNAMESC___usage && return ;;
+			*) _invalid_opt ;;
+		esac
+	done
+
+	shift ` expr $OPTIND - 1 `
+
+	[ -z "$cmd" ] && cmd="$1"
+	shift
+
+	[ -z "$cmd" ] && cmd="help"
+	#[ -z "$cmd" ] && cmd="process"
+
+	case "$cmd" in
+		#process) "__SCRIPTNAMESC___$cmd" "$@" ;;
+		help|usage) __SCRIPTNAMESC___usage ;;
+		*) _invalid_cmd ;;
+	esac
+
+	return $?
+}
+
+#__SCRIPTNAMESC___process() {
+#}
+
+__SCRIPTNAMESC___usage() {
+cat <<USAGE
+Usage: $scriptname [options] command
+
+Available commands:
+
+	help      Show this help screen.
+
+Available options:
+
+	-h        Show this help screen.
+
+USAGE
+}
+
+_echo() {
+	echo "$@"
+}
+
+_error() {
+	_echo "$@" >&2
+}
+
+_fatal() {
+	local exit_code
+	exit_code="$1"
+	shift
+	_error "$@"
+	exit "$exit_code"
+}
+
+_invalid_cmd() {
+	_error "Invalid command: $cmd"
+	_echo
+	__SCRIPTNAMESC___usage
+	exit $e_args
+}
+
+_invalid_opt() {
+	_error "Invalid option: $opt"
+	_echo
+	__SCRIPTNAMESC___usage
+	exit $e_args
+}
+
+__SCRIPTNAMESC___main "$@"
