@@ -15,12 +15,12 @@ mksh_main() {
 	scriptname="` basename "$scriptpath" `"
 	scriptdir="` dirname "$scriptpath" `"
 
-	[ $# -lt 1 ] && mksh_usage && return 16
+	[ $# -lt 1 ] && mksh_help && return 16
 
 	while getopts h opt
 	do
 		case $opt in
-			h) __SCRIPTNAMESC___usage && return ;;
+			h) __SCRIPTNAMESC___help && return ;;
 			*) _invalid_opt ;;
 		esac
 	done
@@ -52,7 +52,7 @@ mksh_main() {
 	_exit
 }
 
-mksh_usage() {
+mksh_help() {
 cat <<USAGE
 Usage: $scriptname scriptfile
 
@@ -81,7 +81,7 @@ _exit() {
 _invalid_opt() {
 	_error "Invalid option: $opt"
 	_echo
-	mksh_usage
+	mksh_help
 	exit $e_args
 }
 
@@ -127,7 +127,7 @@ __SCRIPTNAMESC___main() {
 	while getopts h opt
 	do
 		case $opt in
-			h) __SCRIPTNAMESC___usage && return ;;
+			h) __SCRIPTNAMESC___help && return ;;
 			*) _invalid_opt ;;
 		esac
 	done
@@ -142,18 +142,14 @@ __SCRIPTNAMESC___main() {
 
 	case "$cmd" in
 		process) "__SCRIPTNAMESC___$cmd" "$@" ;;
-		help|usage) __SCRIPTNAMESC___usage ;;
+		help|usage) __SCRIPTNAMESC___help ;;
 		*) _invalid_cmd ;;
 	esac
 
 	_exit
 }
 
-__SCRIPTNAMESC___process() {
-	true
-}
-
-__SCRIPTNAMESC___usage() {
+__SCRIPTNAMESC___help() {
 cat <<USAGE
 Usage: $scriptname [options] command
 
@@ -166,6 +162,10 @@ Available options:
 	-h        Show this help screen.
 
 USAGE
+}
+
+__SCRIPTNAMESC___process() {
+	true
 }
 
 _echo() {
@@ -192,14 +192,14 @@ _fatal() {
 _invalid_cmd() {
 	_error "Invalid command: $cmd"
 	_echo
-	__SCRIPTNAMESC___usage
+	__SCRIPTNAMESC___help
 	exit $e_args
 }
 
 _invalid_opt() {
 	_error "Invalid option: $opt"
 	_echo
-	__SCRIPTNAMESC___usage
+	__SCRIPTNAMESC___help
 	exit $e_args
 }
 
