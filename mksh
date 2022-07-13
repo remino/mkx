@@ -3,12 +3,17 @@
 # Make new shell script executable file from template.
 
 mksh_main() {
-	scriptpath="` realpath "$0" `"  
-	scriptname="` basename "$scriptpath" `"
-	scriptdir="` dirname "$scriptpath" `"
+	trap _exit INT TERM
 
 	e_args=16
 	e_exists=17
+	e_missing_app=18
+
+	_require realpath
+
+	scriptpath="` realpath "$0" `"
+	scriptname="` basename "$scriptpath" `"
+	scriptdir="` dirname "$scriptpath" `"
 
 	[ $# -lt 1 ] && mksh_usage && return 16
 
@@ -44,6 +49,7 @@ mksh_main() {
 
 	chmod a+x "$newscript"
 	_echo "$newscript"
+	_exit
 }
 
 mksh_usage() {
@@ -67,11 +73,34 @@ _error() {
 	_echo "$@" >&2
 }
 
+_exit() {
+	exit_code=$?
+	exit $exit_code
+}
+
 _invalid_opt() {
 	_error "Invalid option: $opt"
 	_echo
 	mksh_usage
 	exit $e_args
+}
+
+_require() {
+	missing_bin=0
+
+	for bin in "$@"
+	do
+		if ! which "$bin" 2>&1 > /dev/null
+		then
+			missing_bin=1
+			_error "Required: $app"
+		fi
+	done
+
+	if [ $missing_bin -ne 0 ]
+	then
+		_fatal $e_missing_app "One or more executables or apps are missing."
+	fi
 }
 
 mksh_main "$@"
@@ -83,12 +112,17 @@ __TEMPLATE__
 # __DATE__
 
 __SCRIPTNAMESC___main() {
-	scriptpath="` realpath "$0" `"  
+	trap _exit INT TERM
+
+	e_args=16
+	e_missing_app=17
+
+	_require realpath
+
+	scriptpath="` realpath "$0" `"
 	scriptname="` basename "$scriptpath" `"
 	scriptdir="` dirname "$scriptpath" `"
 	#rootdir="` dirname "$scriptdir" `"
-
-	e_args=16
 
 	while getopts h opt
 	do
@@ -107,16 +141,17 @@ __SCRIPTNAMESC___main() {
 	#[ -z "$cmd" ] && cmd="process"
 
 	case "$cmd" in
-		#process) "__SCRIPTNAMESC___$cmd" "$@" ;;
+		process) "__SCRIPTNAMESC___$cmd" "$@" ;;
 		help|usage) __SCRIPTNAMESC___usage ;;
 		*) _invalid_cmd ;;
 	esac
 
-	return $?
+	_exit
 }
 
-#__SCRIPTNAMESC___process() {
-#}
+__SCRIPTNAMESC___process() {
+	true
+}
 
 __SCRIPTNAMESC___usage() {
 cat <<USAGE
@@ -141,6 +176,11 @@ _error() {
 	_echo "$@" >&2
 }
 
+_exit() {
+	exit_code=$?
+	exit $exit_code
+}
+
 _fatal() {
 	local exit_code
 	exit_code="$1"
@@ -161,6 +201,24 @@ _invalid_opt() {
 	_echo
 	__SCRIPTNAMESC___usage
 	exit $e_args
+}
+
+_require() {
+	missing_bin=0
+
+	for bin in "$@"
+	do
+		if ! which "$bin" 2>&1 > /dev/null
+		then
+			missing_bin=1
+			_error "Required: $app"
+		fi
+	done
+
+	if [ $missing_bin -ne 0 ]
+	then
+		_fatal $e_missing_app "One or more executables or apps are missing."
+	fi
 }
 
 __SCRIPTNAMESC___main "$@"
