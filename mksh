@@ -11,9 +11,9 @@ mksh_main() {
 
 	_require realpath
 
-	scriptpath="` realpath "$0" `"
-	scriptname="` basename "$scriptpath" `"
-	scriptdir="` dirname "$scriptpath" `"
+	scriptpath="$( realpath "$0" )"
+	scriptname="$( basename "$scriptpath" )"
+	scriptdir="$( dirname "$scriptpath" )"
 
 	[ $# -lt 1 ] && mksh_help && return 16
 
@@ -28,8 +28,8 @@ mksh_main() {
 	newscript="$1"
 	shift
 
-	newscriptname="` basename "$newscript" `"
-	newscriptnamesc="` echo "$newscriptname" | sed 's/-/_/g' `"
+	newscriptname="$( basename "$newscript" )"
+	newscriptnamesc="$( echo "$newscriptname" | sed 's/-/_/g' )"
 
 	if [ -f "$newscript" ]
 	then
@@ -37,7 +37,7 @@ mksh_main() {
 		return $e_exists
 	fi
 
-	date="` date +'%Y-%m-%d %H:%M:%S %Z' `"
+	date="$( date +'%Y-%m-%d %H:%M:%S %Z' )"
 
 	sed '1,/^__TEMPLATE__/d' "$scriptpath" | \
 		sed "
@@ -90,10 +90,10 @@ _require() {
 
 	for bin in "$@"
 	do
-		if ! which "$bin" 2>&1 > /dev/null
+		if ! which "$bin" > /dev/null 2>&1
 		then
 			missing_bin=1
-			_error "Required: $app"
+			_error "Required: $bin"
 		fi
 	done
 
@@ -119,10 +119,9 @@ __SCRIPTNAMESC___main() {
 
 	_require realpath
 
-	scriptpath="` realpath "$0" `"
-	scriptname="` basename "$scriptpath" `"
-	scriptdir="` dirname "$scriptpath" `"
-	#rootdir="` dirname "$scriptdir" `"
+	scriptpath="$( realpath "$0" )"
+	scriptname="$( basename "$scriptpath" )"
+	scriptdir="$( dirname "$scriptpath" )"
 
 	while getopts h opt
 	do
@@ -132,7 +131,7 @@ __SCRIPTNAMESC___main() {
 		esac
 	done
 
-	shift ` expr $OPTIND - 1 `
+	shift "$(( OPTIND - 1 ))"
 
 	[ -z "$cmd" ] && cmd="$1"
 	shift
@@ -182,7 +181,6 @@ _exit() {
 }
 
 _fatal() {
-	local exit_code
 	exit_code="$1"
 	shift
 	_error "$@"
@@ -208,10 +206,10 @@ _require() {
 
 	for bin in "$@"
 	do
-		if ! which "$bin" 2>&1 > /dev/null
+		if ! which "$bin" > /dev/null 2>&1
 		then
 			missing_bin=1
-			_error "Required: $app"
+			_error "Required: $bin"
 		fi
 	done
 
