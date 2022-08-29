@@ -20,7 +20,7 @@ mksh_main() {
 	while getopts h opt
 	do
 		case $opt in
-			h) __SCRIPTNAMESC___help && return ;;
+			h) mksh_help && return ;;
 			*) _invalid_opt ;;
 		esac
 	done
