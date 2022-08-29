@@ -118,6 +118,8 @@ __TEMPLATE__
 #!/bin/sh
 # __SCRIPTNAME__
 
+VERSION='1.0.0'
+
 __SCRIPTNAMESC___main() {
 	trap _exit INT TERM
 
@@ -130,10 +132,11 @@ __SCRIPTNAMESC___main() {
 	scriptname="$( basename "$scriptpath" )"
 	scriptdir="$( dirname "$scriptpath" )"
 
-	while getopts h opt
+	while getopts hv opt
 	do
 		case $opt in
-			h) __SCRIPTNAMESC___help && return ;;
+			h) cmd=help ;;
+			v) cmd=version ;;
 			*) _invalid_opt ;;
 		esac
 	done
@@ -147,8 +150,7 @@ __SCRIPTNAMESC___main() {
 	#[ -z "$cmd" ] && cmd="process"
 
 	case "$cmd" in
-		process) "__SCRIPTNAMESC___$cmd" "$@" ;;
-		help|usage) __SCRIPTNAMESC___help ;;
+		help|process|version) "__SCRIPTNAMESC___$cmd" "$@" ;;
 		*) _invalid_cmd ;;
 	esac
 
@@ -162,16 +164,22 @@ Usage: $scriptname [options] command
 Available commands:
 
 	help      Show this help screen.
+	version   Show script name and version number.
 
 Available options:
 
 	-h        Show this help screen.
+	-v        Show script name and version number.
 
 USAGE
 }
 
 __SCRIPTNAMESC___process() {
 	true
+}
+
+__SCRIPTNAMESC___version() {
+	_echo "$scriptname $VERSION"
 }
 
 _echo() {
