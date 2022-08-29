@@ -2,6 +2,8 @@
 # mksh
 # Make new shell script executable file from template.
 
+VERSION='1.0.0'
+
 mksh_main() {
 	trap _exit INT TERM
 
@@ -17,10 +19,11 @@ mksh_main() {
 
 	[ $# -lt 1 ] && mksh_help && return 16
 
-	while getopts h opt
+	while getopts hv opt
 	do
 		case $opt in
 			h) mksh_help && return ;;
+			v) mksh_version && return ;;
 			*) _invalid_opt ;;
 		esac
 	done
@@ -61,8 +64,13 @@ Make new shell script executable file from template.
 Available options:
 
 	-h        Show this help screen.
+	-v        Show script name and version number.
 
 USAGE
+}
+
+mksh_version() {
+	_echo "$scriptname $VERSION"
 }
 
 _echo() {
