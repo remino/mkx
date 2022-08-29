@@ -117,7 +117,6 @@ exit
 __TEMPLATE__
 #!/bin/sh
 # __SCRIPTNAME__
-# __DATE__
 
 __SCRIPTNAMESC___main() {
 	trap _exit INT TERM
