@@ -13,13 +13,14 @@ mksh_main() {
 
 	_require realpath
 
+	scriptinv="$( basename "$0" )"
 	scriptpath="$( realpath "$0" )"
 	scriptname="$( basename "$scriptpath" )"
 	scriptdir="$( dirname "$scriptpath" )"
 
 	bare=0
 	interpreter='/bin/sh'
-	mode="$( basename "$0" )"
+	mode="$scriptinv"
 
 	case "$mode" in
 		mkx) ;;
@@ -77,11 +78,13 @@ mksh_help() {
 	[ "$mode" = "mkx" ] && mkx_help && return
 
 cat <<USAGE
-Usage: $scriptname scriptfile
+$scriptinv $VERSION
+
+Usage: $scriptname [-bhvx] [-i interpreter] scriptfile
 
 Make new shell script executable file from template.
 
-Available options:
+Options:
 
 	-b        Only write a bare script with only the shebang line, without template.
 	          If output file already exists, make it executable.
@@ -125,16 +128,19 @@ mksh_version() {
 
 mkx_help() {
 cat <<USAGE
-Usage: $mode [options] scriptfile [interpreter]
+$scriptname $VERSION
+
+Usage: $scriptinv [-hv] scriptfile [interpreter]
 
 Make new base shell script executable file.
 If the file already exists, it will make it executable.
 
 When not specified, interpreter defaults to '/bin/sh'.
 
-Available options:
+Options:
 
 	-h        Show this help screen.
+	-v        Show script name and version number.
 
 USAGE
 }
@@ -194,6 +200,7 @@ __SCRIPTNAMESC___main() {
 
 	_require realpath
 
+	scriptinv="$( basename "$0" )"
 	scriptpath="$( realpath "$0" )"
 	scriptname="$( basename "$scriptpath" )"
 	scriptdir="$( dirname "$scriptpath" )"
@@ -225,14 +232,16 @@ __SCRIPTNAMESC___main() {
 
 __SCRIPTNAMESC___help() {
 cat <<USAGE
-Usage: $scriptname [options] command
+$scriptname $VERSION
 
-Available commands:
+Usage: $scriptinv [-hv] command
+
+Commands:
 
 	help      Show this help screen.
 	version   Show script name and version number.
 
-Available options:
+Options:
 
 	-h        Show this help screen.
 	-v        Show script name and version number.
