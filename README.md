@@ -1,12 +1,16 @@
 mksh
 ====
 
+- [mkx](#mkx)
+
 ```
-Usage: mksh scriptfile
+mksh 1.2.0
+
+Usage: mksh [-bhvx] [-i interpreter] scriptfile
 
 Make new shell script executable file from template.
 
-Available options:
+Options:
 
 	-b        Only write a bare script with only the shebang line, without template.
 	          If output file already exists, make it executable.
@@ -22,3 +26,23 @@ Available options:
 
 ```
 
+## mkx
+
+`mksh` can be invoked as `mkx` and is aliased as such in this repo. Invoking it as `mkx` is like calling `mksh -b`, and `mkx outputfile interpreter` is like `mksh -i interpreter outputfile`.
+
+```
+mksh 1.2.0
+
+Usage: mkx [-hv] scriptfile [interpreter]
+
+Make new base shell script executable file.
+If the file already exists, it will make it executable.
+
+When not specified, interpreter defaults to '/bin/sh'.
+
+Options:
+
+	-h        Show this help screen.
+	-v        Show script name and version number.
+
+```
