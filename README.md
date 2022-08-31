@@ -4,7 +4,7 @@ mksh
 - [mkx](#mkx)
 
 ```
-mksh 1.2.0
+mksh 1.2.1
 
 Usage: mksh [-bhvx] [-i interpreter] scriptfile
 
@@ -31,7 +31,7 @@ Options:
 `mksh` can be invoked as `mkx` and is aliased as such in this repo. Invoking it as `mkx` is like calling `mksh -b`, and `mkx outputfile interpreter` is like `mksh -i interpreter outputfile`.
 
 ```
-mksh 1.2.0
+mksh 1.2.1
 
 Usage: mkx [-hv] scriptfile [interpreter]
 
