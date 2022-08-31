@@ -19,11 +19,17 @@ mksh_main() {
 
 	bare=0
 	interpreter='/bin/sh'
+	mode="$( basename "$0" )"
 
-	while getopts bhi:v opt
+	case "$mode" in
+		mkx) ;;
+		*) mode=mksh ;;
+	esac
+
+	while getopts bhi:vx opt
 	do
 		case $opt in
-			b) bare=1 ;;
+			b|x) bare=1 ;;
 			h) mksh_help && return ;;
 			i) bare=1; interpreter="$OPTARG" ;;
 			v) mksh_version && return ;;
@@ -36,7 +42,14 @@ mksh_main() {
 	[ $# -lt 1 ] && mksh_help && return 16
 
 	newscript="$1"
+
 	shift
+
+	if [ "$mode" = "mkx" ]
+	then
+		bare=1
+		[ $# -gt 0 ] && interpreter="$1" && shift
+	fi
 
 	if [ $bare -eq 0 ]
 	then
@@ -61,6 +74,8 @@ mksh_bare() {
 }
 
 mksh_help() {
+	[ "$mode" = "mkx" ] && mkx_help && return
+
 cat <<USAGE
 Usage: $scriptname scriptfile
 
@@ -70,9 +85,15 @@ Available options:
 
 	-b        Only write a bare script with only the shebang line, without template.
 	          If output file already exists, make it executable.
+	          Implied when called script is invoked as 'mkx'.
+
 	-h        Show this help screen.
+
 	-i        Specify interpreter in shebang line. Implies -b.
+
 	-v        Show script name and version number.
+
+	-x        Synonym of -b.
 
 USAGE
 }
@@ -100,6 +121,22 @@ mksh_template() {
 
 mksh_version() {
 	_echo "$scriptname $VERSION"
+}
+
+mkx_help() {
+cat <<USAGE
+Usage: $mode [options] scriptfile [interpreter]
+
+Make new base shell script executable file.
+If the file already exists, it will make it executable.
+
+When not specified, interpreter defaults to '/bin/sh'.
+
+Available options:
+
+	-h        Show this help screen.
+
+USAGE
 }
 
 _echo() {
