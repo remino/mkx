@@ -17,20 +17,67 @@ mksh_main() {
 	scriptname="$( basename "$scriptpath" )"
 	scriptdir="$( dirname "$scriptpath" )"
 
-	[ $# -lt 1 ] && mksh_help && return 16
+	bare=0
+	interpreter='/bin/sh'
 
-	while getopts hv opt
+	while getopts bhi:v opt
 	do
 		case $opt in
+			b) bare=1 ;;
 			h) mksh_help && return ;;
+			i) bare=1; interpreter="$OPTARG" ;;
 			v) mksh_version && return ;;
 			*) _invalid_opt ;;
 		esac
 	done
 
+	shift "$(( OPTIND - 1 ))"
+
+	[ $# -lt 1 ] && mksh_help && return 16
+
 	newscript="$1"
 	shift
 
+	if [ $bare -eq 0 ]
+	then
+		mksh_template
+	else
+		mksh_bare
+	fi
+
+	chmod a+x "$newscript"
+	_echo "$newscript"
+	_exit
+}
+
+mksh_bare() {
+	if [ ! -f "$newscript" ]
+	then
+		echo "#!$interpreter" > "$newscript"
+		echo "" >> "$newscript"
+	fi
+
+	[ -f "$newscript" ] && chmod a+x "$newscript"
+}
+
+mksh_help() {
+cat <<USAGE
+Usage: $scriptname scriptfile
+
+Make new shell script executable file from template.
+
+Available options:
+
+	-b        Only write a bare script with only the shebang line, without template.
+	          If output file already exists, make it executable.
+	-h        Show this help screen.
+	-i        Specify interpreter in shebang line. Implies -b.
+	-v        Show script name and version number.
+
+USAGE
+}
+
+mksh_template() {
 	newscriptname="$( basename "$newscript" )"
 	newscriptnamesc="$( echo "$newscriptname" | sed 's/-/_/g' )"
 
@@ -49,24 +96,6 @@ mksh_main() {
 			s/__DATE__/$date/g;
 		" \
 		> "$newscript"
-
-	chmod a+x "$newscript"
-	_echo "$newscript"
-	_exit
-}
-
-mksh_help() {
-cat <<USAGE
-Usage: $scriptname scriptfile
-
-Make new shell script executable file from template.
-
-Available options:
-
-	-h        Show this help screen.
-	-v        Show script name and version number.
-
-USAGE
 }
 
 mksh_version() {
