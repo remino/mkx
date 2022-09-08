@@ -1,12 +1,12 @@
-mksh
-====
+mkx
+===
 
-- [mkx](#mkx)
+- [Formerly _mksh_](#formerly-mksh)
 
 ```
-mksh 1.2.1
+mkx 2.0.0
 
-Usage: mksh [-bhvx] [-i interpreter] scriptfile
+Usage: mkx [-bhvx] [-i interpreter] scriptfile
 
 Make new shell script executable file from template.
 
@@ -26,23 +26,8 @@ Options:
 
 ```
 
-## mkx
+## Formerly _mksh_
 
-`mksh` can be invoked as `mkx` and is aliased as such in this repo. Invoking it as `mkx` is like calling `mksh -b`, and `mkx outputfile interpreter` is like `mksh -i interpreter outputfile`.
+As the name _mksh_ is more commonly associated with the [MirBSD Korn Shell](https://www.mirbsd.org/mksh.htm), this repo has been renamed from _mksh_ to _mkx_. The same goes for the namesake script within.
 
-```
-mksh 1.2.1
-
-Usage: mkx [-hv] scriptfile [interpreter]
-
-Make new base shell script executable file.
-If the file already exists, it will make it executable.
-
-When not specified, interpreter defaults to '/bin/sh'.
-
-Options:
-
-	-h        Show this help screen.
-	-v        Show script name and version number.
-
-```
+Invoking `mksh` with `mkx` used to be the equivalent of `mksh -b` or `mksh -i <interpreter>`. But the with this name change, `mkx` was now made to work like `mksh`.
