@@ -2,20 +2,16 @@
 # mkx
 # Make new shell script executable file from template.
 
-VERSION='2.0.0'
+VERSION='2.1.0'
 
 mkx_main() {
 	trap _exit INT TERM
 
 	e_args=16
 	e_exists=17
-	e_missing_app=18
 
-	_require realpath
-
-	scriptpath="$( realpath "$0" )"
+	scriptpath="$( readlink -f "$0" )"
 	scriptname="$( basename "$scriptpath" )"
-	scriptdir="$( dirname "$scriptpath" )"
 
 	bare=0
 	interpreter='/bin/sh'
@@ -65,11 +61,11 @@ mkx_help() {
 cat <<USAGE
 $scriptname $VERSION
 
-Usage: $scriptname [-bhvx] [-i interpreter] scriptfile
+USAGE: $scriptname [-bhvx] [-i interpreter] scriptfile
 
 Make new shell script executable file from template.
 
-Options:
+OPTIONS:
 
 	-b        Only write a bare script with only the shebang line, without template.
 	          If output file already exists, make it executable.
@@ -129,24 +125,6 @@ _invalid_opt() {
 	exit $e_args
 }
 
-_require() {
-	missing_bin=0
-
-	for bin in "$@"
-	do
-		if ! which "$bin" > /dev/null 2>&1
-		then
-			missing_bin=1
-			_error "Required: $bin"
-		fi
-	done
-
-	if [ $missing_bin -ne 0 ]
-	then
-		_fatal $e_missing_app "One or more executables or apps are missing."
-	fi
-}
-
 mkx_main "$@"
 exit
 
@@ -160,14 +138,10 @@ __SCRIPTNAMESC___main() {
 	trap _exit INT TERM
 
 	e_args=16
-	e_missing_app=17
-
-	_require realpath
 
 	scriptinv="$( basename "$0" )"
-	scriptpath="$( realpath "$0" )"
+	scriptpath="$( readlink -f "$0" )"
 	scriptname="$( basename "$scriptpath" )"
-	scriptdir="$( dirname "$scriptpath" )"
 
 	while getopts hv opt
 	do
@@ -198,14 +172,14 @@ __SCRIPTNAMESC___help() {
 cat <<USAGE
 $scriptname $VERSION
 
-Usage: $scriptinv [-hv] command
+USAGE: $scriptinv [<options>] <command> [<args>]
 
-Commands:
+COMMANDS:
 
 	help      Show this help screen.
 	version   Show script name and version number.
 
-Options:
+OPTIONS:
 
 	-h        Show this help screen.
 	-v        Show script name and version number.
@@ -253,24 +227,6 @@ _invalid_opt() {
 	_echo
 	__SCRIPTNAMESC___help
 	exit $e_args
-}
-
-_require() {
-	missing_bin=0
-
-	for bin in "$@"
-	do
-		if ! which "$bin" > /dev/null 2>&1
-		then
-			missing_bin=1
-			_error "Required: $bin"
-		fi
-	done
-
-	if [ $missing_bin -ne 0 ]
-	then
-		_fatal $e_missing_app "One or more executables or apps are missing."
-	fi
 }
 
 __SCRIPTNAMESC___main "$@"
