@@ -4,7 +4,7 @@ mkx
 - [Formerly _mksh_](#formerly-mksh)
 
 ```
-mkx 2.0.0
+mkx 2.3.0
 
 USAGE: mkx [-bhvx] [-i <interpreter>] <scriptfile>
 
