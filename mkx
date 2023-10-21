@@ -146,25 +146,26 @@ __SCRIPT_NAME_SC___main() {
 	SCRIPT_PATH="$( readlink -f "$0" )"
 	SCRIPT_NAME="$( basename "$SCRIPT_PATH" )"
 
-	while getopts hv opt
+	while getopts hv OPT
 	do
-		case $opt in
-			h) cmd=help ;;
-			v) cmd=version ;;
+		case $OPT in
+			h) CMD=help ;;
+			v) CMD=version ;;
 			*) _invalid_opt ;;
 		esac
 	done
 
 	shift "$(( OPTIND - 1 ))"
 
-	[ -z "$cmd" ] && cmd="$1"
+	# Comment out the following if you do not want to use commands:
+	[ -z "$CMD" ] && CMD="$1"
 	[ $# -gt 0 ] && shift
 
-	[ -z "$cmd" ] && cmd="help"
-	#[ -z "$cmd" ] && cmd="process"
+	[ -z "$CMD" ] && CMD="help"
+	#[ -z "$CMD" ] && CMD="process"
 
-	case "$cmd" in
-		help|process|version) "__SCRIPT_NAME_SC___$cmd" "$@" ;;
+	case "$CMD" in
+		help|process|version) "__SCRIPT_NAME_SC___$CMD" "$@" ;;
 		*) _invalid_cmd ;;
 	esac
 
@@ -208,7 +209,7 @@ _error() {
 
 _exit() {
 	exit_code=$?
-	exit $exit_code
+	exit "$exit_code"
 }
 
 _fatal() {
@@ -219,17 +220,17 @@ _fatal() {
 }
 
 _invalid_cmd() {
-	_error "Invalid command: $cmd"
+	_error "Invalid command: $CMD"
 	_echo
 	__SCRIPT_NAME_SC___help
-	exit $E_ARGS
+	exit "$E_ARGS"
 }
 
 _invalid_opt() {
-	_error "Invalid option: $opt"
+	_error "Invalid option: $OPT"
 	_echo
 	__SCRIPT_NAME_SC___help
-	exit $E_ARGS
+	exit "$E_ARGS"
 }
 
 __SCRIPT_NAME_SC___main "$@"
