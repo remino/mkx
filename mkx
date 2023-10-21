@@ -97,6 +97,7 @@ mkx_template() {
 			s/__SCRIPT_NAME__/$new_script_name/g;
 			s/__SCRIPT_NAME_SC__/$new_script_name_sc/g;
 			s/__DATE__/$date/g;
+			s/__MKX_VERSION__/$VERSION/g;
 		" \
 		> "$NEW_SCRIPT"
 }
@@ -131,6 +132,8 @@ exit
 __TEMPLATE__
 #!/bin/sh
 # __SCRIPT_NAME__
+
+# Generated using mkx __MKX_VERSION__: https://github.com/remino/mkx
 
 VERSION='1.0.0'
 
