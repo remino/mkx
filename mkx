@@ -61,7 +61,7 @@ mkx_help() {
 cat <<USAGE
 $SCRIPT_NAME $VERSION
 
-USAGE: $SCRIPT_NAME [-bhvx] [-i interpreter] scriptfile
+USAGE: $SCRIPT_NAME [-bhvx] [-i <interpreter>] <scriptfile>
 
 Make new shell script executable file from template.
 

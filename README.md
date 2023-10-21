@@ -6,11 +6,11 @@ mkx
 ```
 mkx 2.0.0
 
-Usage: mkx [-bhvx] [-i interpreter] scriptfile
+USAGE: mkx [-bhvx] [-i <interpreter>] <scriptfile>
 
 Make new shell script executable file from template.
 
-Options:
+OPTIONS:
 
 	-b        Only write a bare script with only the shebang line, without template.
 	          If output file already exists, make it executable.
@@ -21,8 +21,6 @@ Options:
 	-i        Specify interpreter in shebang line. Implies -b.
 
 	-v        Show script name and version number.
-
-	-x        Synonym of -b.
 
 ```
 
