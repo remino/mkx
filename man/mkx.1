@@ -1,0 +1,57 @@
+.TH MKX 1 "July 2024" "mkx"
+.SH NAME
+mkx \- a Make new shell script executable file from template
+.SH SYNOPSIS
+.B mkx
+[\fIbhsvx\fR] [\fI-i\fR \fIINTERPRETER\fR] [\fI-t\fR \fITEMPLATE\fR] [\fIFILE\fR]
+.SH DESCRIPTION
+.B mkx
+creates a new shell script executable file from a template.
+.SH OPTIONS
+.TP
+.B \-b
+Only write a bare script with only the shebang line, without template.
+.TP
+.B \-h
+Show help screen.
+.TP
+.B \-i \fIINTERPRETER\fR
+Specify the interpreter to use in the shebang line.
+.TP
+.B \-s
+Use /bin/sh as interpreter in the shebang line. Implies \-b.
+.TP
+.B \-t \fITEMPLATE\fR
+Specify the template to use.
+.TP
+.B \-v
+Show the version number.
+.SH TEMPLATES
+mkx uses Mustache templates to generate scripts. The templates have the extension of \fI.mustache\fR
+and they are looked for in the following directories:
+.TP
+.B \fI$MKX_TEMPLATES_DIR\fR
+The directory specified by the environment variable \fI$MKX_TEMPLATES_DIR\fR. Defaults to \fItemplates\fR in the script directory.
+.B \fI$XDG_CONFIG_HOME/mkx/templates\fR
+The directory \fI$XDG_CONFIG_HOME/mkx/templates\fR if the environment variable \fI$XDG_CONFIG_HOME\fR is set. If not, it defaults to \fI$HOME/.config/mkx/templates\fR.
+.TP
+The following variables are available:
+.TP
+.B \fIscript_name\fR
+The name of the script.
+.TP
+.B \fIscript_name_sc\fR
+The name of the script in lowercase.
+.TP
+.B \fIdate\fR
+The date when the script was created in format \fI%Y-%m-%d %H:%M:%S %Z\fR.
+.TP
+.B \fImkx_version\fR
+The version of mkx.
+.SH AUTHOR
+Written by Rémino Rem: <https://remino.net/>
+.SH "ISSUES"
+GitHub: <https://github.com/remino/mkx>
+.SH COPYRIGHT
+Copyright © 2024 Rémino Rem.
+Licence ISC: <https://opensource.org/licenses/ISC>
