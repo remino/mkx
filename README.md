@@ -2,6 +2,7 @@ mkx
 ===
 
 - [Formerly _mksh_](#formerly-mksh)
+- [Tests](#tests)
 
 ```
 mkx 2.3.0
@@ -29,3 +30,9 @@ OPTIONS:
 As the name _mksh_ is more commonly associated with the [MirBSD Korn Shell](https://www.mirbsd.org/mksh.htm), this repo has been renamed from _mksh_ to _mkx_. The same goes for the namesake script within.
 
 Invoking `mksh` with `mkx` used to be the equivalent of `mksh -b` or `mksh -i <interpreter>`. But the with this name change, `mkx` was now made to work like `mksh`.
+
+## Tests
+
+Tests are written in [Bats](https://bats-core.readthedocs.io/en/stable/).
+
+To run them, install Bats and run `bats tests` in the project root directory.
