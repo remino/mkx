@@ -1,6 +1,9 @@
 mkx
 ===
 
+- [Installation](#installation)
+	- [Repo Clone](#repo-clone)
+	- [Homebrew](#homebrew)
 - [Formerly _mksh_](#formerly-mksh)
 - [Tests](#tests)
 
@@ -26,6 +29,23 @@ OPTIONS:
 
 	-v        Show script name and version number.
 
+```
+
+## Installation
+
+### Repo Clone
+
+```bash
+git clone https://github.com/remino/mkx
+cd mkx
+./mkx
+```
+
+### Homebrew
+
+```bash
+brew install remino/remino/mkx
+./mkx
 ```
 
 ## Formerly _mksh_
