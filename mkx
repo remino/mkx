@@ -16,19 +16,23 @@ mkx_main() {
 	SCRIPT_DIR="$(dirname "$SCRIPT_PATH")"
 
 	BARE=0
-	INTERPRETER='/bin/sh'
+	INTERPRETER='/usr/bin/env bash'
 	TEMPLATE_NAME='default'
 
 	[ -z "$MKX_LIB_DIR" ] && MKX_LIB_DIR="$SCRIPT_DIR/lib"
 	[ -z "$MKX_TEMPLATES_DIR" ] && MKX_TEMPLATES_DIR="$SCRIPT_DIR/templates"
 
-	while getopts bhi:lt:v opt; do
+	while getopts bhi:lst:v opt; do
 		case $opt in
 		b) BARE=1 ;;
 		h) _help && return ;;
 		i)
 			BARE=1
 			INTERPRETER="$OPTARG"
+			;;
+		s)
+			BARE=1
+			INTERPRETER="/bin/sh"
 			;;
 		t) TEMPLATE_NAME="$OPTARG" ;;
 		v) _version && return ;;
@@ -94,7 +98,7 @@ _help() {
 	cat <<USAGE
 $SCRIPT_NAME $VERSION
 
-USAGE: $SCRIPT_NAME [-bhvx] [-i <interpreter>] [-t <template>] <scriptfile>
+USAGE: $SCRIPT_NAME [-bhsvx] [-i <interpreter>] [-t <template>] <scriptfile>
 
 Make new shell script executable file from template.
 
@@ -106,6 +110,8 @@ OPTIONS:
 	-h        Show this help screen.
 
 	-i        Specify interpreter in shebang line. Implies -b.
+
+	-s        Use /bin/sh as interpreter. Implies -b.
 
 	-t        Specify template file. If not specified, uses 'default'.
 
