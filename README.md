@@ -5,9 +5,9 @@ mkx
 - [Tests](#tests)
 
 ```
-mkx 2.3.0
+mkx 3.0.0
 
-USAGE: mkx [-bhvx] [-i <interpreter>] <scriptfile>
+USAGE: mkx [-bhsvx] [-i <interpreter>] [-t <template>] <scriptfile>
 
 Make new shell script executable file from template.
 
@@ -15,11 +15,14 @@ OPTIONS:
 
 	-b        Only write a bare script with only the shebang line, without template.
 	          If output file already exists, make it executable.
-	          Implied when called script is invoked as 'mkx'.
 
 	-h        Show this help screen.
 
 	-i        Specify interpreter in shebang line. Implies -b.
+
+	-s        Use /bin/sh as interpreter. Implies -b.
+
+	-t        Specify template file. If not specified, uses 'default'.
 
 	-v        Show script name and version number.
 
