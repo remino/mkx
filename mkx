@@ -118,7 +118,6 @@ USAGE
 
 _invalid_opt() {
 	_error "Invalid option: $opt"
-	_echo
 	_help
 	exit $E_ARGS
 }
