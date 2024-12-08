@@ -70,7 +70,7 @@ teardown() {
 	[ -f "$OUTPUT_FILE" ]
 }
 
-@test "make file exectuable if it already exists" {
+@test "makes file exectuable if it already exists" {
 	OUTPUT_FILE="$(mktemp)"
 	rm -f "$OUTPUT_FILE"
 	touch "$OUTPUT_FILE"
