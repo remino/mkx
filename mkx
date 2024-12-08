@@ -119,7 +119,7 @@ USAGE
 _invalid_opt() {
 	_error "Invalid option: $opt"
 	_echo
-	mkx_help
+	_help
 	exit $E_ARGS
 }
 
