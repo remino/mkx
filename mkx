@@ -24,14 +24,14 @@ mkx_main() {
 
 	while getopts bhi:lst:v opt; do
 		case $opt in
-		b) BARE=1 ;;
+		b) TEMPLATE_NAME='bare' ;;
 		h) _help && return ;;
 		i)
-			BARE=1
+			TEMPLATE_NAME='bare'
 			INTERPRETER="$OPTARG"
 			;;
 		s)
-			BARE=1
+			TEMPLATE_NAME='bare'
 			INTERPRETER="/bin/sh"
 			;;
 		t) TEMPLATE_NAME="$OPTARG" ;;
@@ -48,24 +48,11 @@ mkx_main() {
 
 	shift
 
-	if [ $BARE -eq 0 ]; then
-		_template
-	else
-		_bare
-	fi
+	_template
 
 	chmod a+x "$NEW_SCRIPT"
 	_echo "$NEW_SCRIPT"
 	_exit
-}
-
-_bare() {
-	if [ ! -f "$NEW_SCRIPT" ]; then
-		echo "#!$INTERPRETER" >"$NEW_SCRIPT"
-		echo "" >>"$NEW_SCRIPT"
-	fi
-
-	[ -f "$NEW_SCRIPT" ] && chmod a+x "$NEW_SCRIPT"
 }
 
 _find_template() {
@@ -73,7 +60,8 @@ _find_template() {
 
 	for filepath in \
 		"$MKX_TEMPLATES_DIR/$template_name.mustache" \
-		"${XDG_CONFIG_HOME:-$HOME/.config}/mkx/templates/$template_name.mustache"; do
+		"${XDG_CONFIG_HOME:-$HOME/.config}/mkx/templates/$template_name.mustache" \
+		"$1"; do
 		if [ -f "$filepath" ]; then
 			echo "$filepath"
 			return
@@ -94,6 +82,13 @@ _exit() {
 	exit $exit_code
 }
 
+_fatal() {
+	exit_code="$1"
+	shift
+	_error "$@"
+	_exit "$exit_code"
+}
+
 _help() {
 	cat <<USAGE
 $SCRIPT_NAME $VERSION
@@ -102,16 +97,17 @@ USAGE: $SCRIPT_NAME [-bhsvx] [-i <interpreter>] [-t <template>] <scriptfile>
 
 Make new shell script executable file from template.
 
+If the file exists, make it executable.
+
 OPTIONS:
 
 	-b        Only write a bare script with only the shebang line, without template.
-	          If output file already exists, make it executable.
 
 	-h        Show this help screen.
 
-	-i        Specify interpreter in shebang line. Implies -b.
+	-i        Specify interpreter in shebang line. Implies -b if -t is not specified.
 
-	-s        Use /bin/sh as interpreter. Implies -b.
+	-s        Use /bin/sh as interpreter, like '-i /bin/sh'.
 
 	-t        Specify template file. If not specified, uses 'default'.
 
@@ -128,18 +124,17 @@ _invalid_opt() {
 }
 
 _template() {
+	interpreter="$INTERPRETER"
 	new_script_name="$(basename "$NEW_SCRIPT")"
 	new_script_name_sc="$(echo "$new_script_name" | sed 's/-/_/g')"
 	template_file="$(_find_template "$TEMPLATE_NAME")"
 
 	if [ -z "$template_file" ]; then
-		_error "Template file not found: $template_file"
-		return $E_NO_TEMPLATE
+		_fatal $E_NO_TEMPLATE "Template file not found: $TEMPLATE_NAME"
 	fi
 
 	if [ -f "$NEW_SCRIPT" ]; then
-		_error "File already exists: $NEW_SCRIPT"
-		return $E_EXISTS
+		_echo "Making file exectuable: $NEW_SCRIPT"
 	fi
 
 	date="$(date +'%Y-%m-%d %H:%M:%S %Z')"

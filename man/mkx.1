@@ -16,7 +16,7 @@ Only write a bare script with only the shebang line, without template.
 Show help screen.
 .TP
 .B \-i \fIINTERPRETER\fR
-Specify the interpreter to use in the shebang line.
+Specify the interpreter to use in the shebang line. Defaults to $fI/usr/bin/env bash\fR.
 .TP
 .B \-s
 Use /bin/sh as interpreter in the shebang line. Implies \-b.
@@ -37,17 +37,23 @@ The directory \fI$XDG_CONFIG_HOME/mkx/templates\fR if the environment variable \
 .TP
 The following variables are available:
 .TP
+.B \fIdate\fR
+The date when the script was created in format \fI%Y-%m-%d %H:%M:%S %Z\fR.
+.TP
+.B \fIinterpreter\fR
+The interpreter specified with the \fI-i\fR option or the default interpreter.
+.TP
+.B \fImkx_version\fR
+The version of mkx.
+.TP
+.B \fImkx_version\fR
+The version of mkx.
+.TP
 .B \fIscript_name\fR
 The name of the script.
 .TP
 .B \fIscript_name_sc\fR
 The name of the script in lowercase.
-.TP
-.B \fIdate\fR
-The date when the script was created in format \fI%Y-%m-%d %H:%M:%S %Z\fR.
-.TP
-.B \fImkx_version\fR
-The version of mkx.
 .SH AUTHOR
 Written by Rémino Rem: <https://remino.net/>
 .SH "ISSUES"

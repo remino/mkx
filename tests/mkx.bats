@@ -7,7 +7,7 @@ teardown() {
 }
 
 @test "shows version" {
-	local version="$( grep VERSION ./mkx | grep -o '[0-9]\+\.[0-9]\+\.[0-9]\+' )"
+	local version="$(grep VERSION ./mkx | grep -o '[0-9]\+\.[0-9]\+\.[0-9]\+')"
 
 	run ./mkx -v
 
@@ -28,8 +28,8 @@ teardown() {
 	run ./mkx "$OUTPUT_FILE"
 
 	[ "$status" -eq 0 ]
-	[ "$( head -n 1 "$OUTPUT_FILE" )" = "#!/usr/bin/env bash" ]
-	[ "$( wc -l < "$OUTPUT_FILE" )" -gt 2 ]
+	[ "$(head -n 1 "$OUTPUT_FILE")" = "#!/usr/bin/env bash" ]
+	[ "$(wc -l <"$OUTPUT_FILE")" -gt 2 ]
 	[ -x "$OUTPUT_FILE" ]
 	[ -f "$OUTPUT_FILE" ]
 }
@@ -40,8 +40,8 @@ teardown() {
 	run ./mkx -t default "$OUTPUT_FILE"
 
 	[ "$status" -eq 0 ]
-	[ "$( head -n 1 "$OUTPUT_FILE" )" = "#!/usr/bin/env bash" ]
-	[ "$( wc -l < "$OUTPUT_FILE" )" -gt 2 ]
+	[ "$(head -n 1 "$OUTPUT_FILE")" = "#!/usr/bin/env bash" ]
+	[ "$(wc -l <"$OUTPUT_FILE")" -gt 2 ]
 	[ -x "$OUTPUT_FILE" ]
 	[ -f "$OUTPUT_FILE" ]
 }
@@ -52,8 +52,8 @@ teardown() {
 	run ./mkx -b "$OUTPUT_FILE"
 
 	[ "$status" -eq 0 ]
-	[ "$( head -n 1 "$OUTPUT_FILE" )" = "#!/usr/bin/env bash" ]
-	[ "$( wc -l < "$OUTPUT_FILE" )" -eq 2 ]
+	[ "$(head -n 1 "$OUTPUT_FILE")" = "#!/usr/bin/env bash" ]
+	[ "$(wc -l <"$OUTPUT_FILE")" -eq 2 ]
 	[ -x "$OUTPUT_FILE" ]
 	[ -f "$OUTPUT_FILE" ]
 }
@@ -64,8 +64,19 @@ teardown() {
 	run ./mkx -s "$OUTPUT_FILE"
 
 	[ "$status" -eq 0 ]
-	[ "$( head -n 1 "$OUTPUT_FILE" )" = "#!/bin/sh" ]
-	[ "$( wc -l < "$OUTPUT_FILE" )" -eq 2 ]
+	[ "$(head -n 1 "$OUTPUT_FILE")" = "#!/bin/sh" ]
+	[ "$(wc -l <"$OUTPUT_FILE")" -eq 2 ]
 	[ -x "$OUTPUT_FILE" ]
 	[ -f "$OUTPUT_FILE" ]
+}
+
+@test "make file exectuable if it already exists" {
+	OUTPUT_FILE="$(mktemp)"
+	rm -f "$OUTPUT_FILE"
+	touch "$OUTPUT_FILE"
+	chmod -w "$OUTPUT_FILE"
+	run ./mkx "$OUTPUT_FILE"
+
+	[ "$status" -eq 0 ]
+	[ -x "$OUTPUT_FILE" ]
 }
