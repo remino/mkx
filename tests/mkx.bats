@@ -80,3 +80,14 @@ teardown() {
 	[ "$status" -eq 0 ]
 	[ -x "$OUTPUT_FILE" ]
 }
+
+@test "shows help when an invalid option is set" {
+	run bash -c './mkx -h 2>/dev/null'
+	local help="$output"
+
+	run bash -c './mkx -t 2>/dev/null'
+	local template_help="$output"
+
+	[ "$status" -eq 16 ]
+	[ "$help" = "$template_help" ]
+}
