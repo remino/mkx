@@ -2,7 +2,9 @@
 
 {{script_name_sc}}_main() {
 	E_ARGS=16
-	cd "$( dirname "$0" )" || exit $E_ARGS
+	E_CD_FAILED=17
+
+	cd "$( dirname "$0" )" || exit $E_CD_FAILED
 }
 
 {{script_name_sc}}_main "$@"
