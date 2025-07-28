@@ -6,6 +6,8 @@
 VERSION='1.0.0'
 
 {{script_name_sc}}_main() {
+	set -euo pipefail # -x
+
 	trap _exit INT TERM
 
 	E_ARGS=16
