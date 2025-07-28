@@ -32,8 +32,8 @@ VERSION='1.0.0'
 	#[ -z "$CMD" ] && CMD="process"
 
 	case "$CMD" in
-	help | process | version) "{{script_name_sc}}_$CMD" "$@" ;;
-	*) _invalid_cmd ;;
+		help | process | version) "{{script_name_sc}}_$CMD" "$@" ;;
+		*) _invalid_cmd ;;
 	esac
 
 	_exit
