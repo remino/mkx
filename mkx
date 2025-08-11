@@ -193,6 +193,7 @@ _template() {
 		# shellcheck source=lib/mo
 		source "$mo"
 
+		export interpreter="$interpreter"
 		export script_name="$new_script_name"
 		export script_name_sc="$new_script_name_sc"
 		export date="$date"
