@@ -78,8 +78,8 @@ _error() {
 }
 
 _exit() {
-	exit_code=$?
-	exit $exit_code
+	local status=$?
+	exit "${1:-$status}"
 }
 
 _fatal() {

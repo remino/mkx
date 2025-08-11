@@ -91,3 +91,20 @@ teardown() {
 	[ "$status" -eq 16 ]
 	[ "$help" = "$template_help" ]
 }
+
+@test "exits with the right exit code" {
+	run ./mkx -h
+	[ "$status" -eq 0 ]
+
+	run ./mkx -t non_existing_template
+	[ "$status" -eq 16 ]
+
+	run ./mkx
+	[ "$status" -eq 16 ]
+
+	run ./mkx -b
+	[ "$status" -eq 16 ]
+
+	run ./mkx -s
+	[ "$status" -eq 16 ]
+}
