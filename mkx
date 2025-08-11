@@ -12,7 +12,7 @@ mkx_main() {
 	E_NO_TEMPLATE=18
 	E_NO_MO_LIB=19
 
-	SCRIPT_PATH="$(readlink -f "$0")"
+	SCRIPT_PATH="$(cd -- "$(dirname -- "$0")" && pwd -P)/$(basename -- "$0")"
 	SCRIPT_NAME="$(basename "$SCRIPT_PATH")"
 	SCRIPT_DIR="$(dirname "$SCRIPT_PATH")"
 
