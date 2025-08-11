@@ -8,7 +8,7 @@ mkx_main() {
 	trap _exit INT TERM
 
 	E_ARGS=16
-	E_EXISTS=17
+	E_MISSING=17
 	E_NO_TEMPLATE=18
 	E_NO_MO_LIB=19
 
@@ -59,7 +59,7 @@ mkx_main() {
 			_echo "Making file executable: $NEW_SCRIPT"
 			_chmod "$NEW_SCRIPT"
 		else
-			_fatal $E_EXISTS "File does not exist: $NEW_SCRIPT"
+			_fatal $E_MISSING "File does not exist: $NEW_SCRIPT"
 		fi
 		return
 	fi
