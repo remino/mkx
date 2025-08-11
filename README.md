@@ -1,34 +1,14 @@
 # mkx
 
+Make new executable shell script file from template.
+
+Rémino Rem <https://remino.net/>, 2022-2025, ISC licence.
+
 - [Installation](#installation)
   - [Repo Clone](#repo-clone)
   - [Homebrew](#homebrew)
 - [Formerly _mksh_](#formerly-mksh)
 - [Tests](#tests)
-
-```
-mkx 3.0.0
-
-USAGE: mkx [-bhsvx] [-i <interpreter>] [-t <template>] <scriptfile>
-
-Make new shell script executable file from template.
-
-OPTIONS:
-
-	-b        Only write a bare script with only the shebang line, without template.
-	          If output file already exists, make it executable.
-
-	-h        Show this help screen.
-
-	-i        Specify interpreter in shebang line. Implies -b.
-
-	-s        Use /bin/sh as interpreter. Implies -b.
-
-	-t        Specify template file. If not specified, uses 'default'.
-
-	-v        Show script name and version number.
-
-```
 
 ## Installation
 
@@ -45,6 +25,17 @@ cd mkx
 ```bash
 brew install remino/remino/mkx
 ./mkx
+```
+
+## Usage
+
+See the help screen or the manual page for details on how to use `mkx`:
+
+```sh
+# Help screen
+mkx -h
+# Manual page
+man mkx
 ```
 
 ## Formerly _mksh_
