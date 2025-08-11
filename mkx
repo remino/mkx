@@ -22,6 +22,8 @@ mkx_main() {
 	[ -z "$MKX_LIB_DIR" ] && MKX_LIB_DIR="$SCRIPT_DIR/lib"
 	[ -z "$MKX_TEMPLATES_DIR" ] && MKX_TEMPLATES_DIR="$SCRIPT_DIR/templates"
 
+	[ $# -lt 1 ] && _help && return
+
 	while getopts bhi:lst:v opt; do
 		case $opt in
 		b) TEMPLATE_NAME='bare' ;;

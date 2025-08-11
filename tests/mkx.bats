@@ -100,7 +100,7 @@ teardown() {
 	[ "$status" -eq 16 ]
 
 	run ./mkx
-	[ "$status" -eq 16 ]
+	[ "$status" -eq 0 ]
 
 	run ./mkx -b
 	[ "$status" -eq 16 ]
