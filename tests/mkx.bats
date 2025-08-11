@@ -46,6 +46,15 @@ teardown() {
 	[ -f "$OUTPUT_FILE" ]
 }
 
+@test "fails to generate script from non-existing template" {
+	OUTPUT_FILE="$(mktemp)"
+	rm -f "$OUTPUT_FILE"
+	run ./mkx -t non_existing_template "$OUTPUT_FILE"
+
+	[ "$status" -eq 18 ]
+	[ ! -f "$OUTPUT_FILE" ]
+}
+
 @test "generates bare script" {
 	OUTPUT_FILE="$(mktemp)"
 	rm -f "$OUTPUT_FILE"
