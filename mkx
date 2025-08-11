@@ -17,7 +17,6 @@ mkx_main() {
 	SCRIPT_DIR="$(dirname "$SCRIPT_PATH")"
 
 	CHMOD=0
-	BARE=0
 	FORCE=0
 	INTERPRETER='/usr/bin/env bash'
 	TEMPLATE_NAME='default'
