@@ -111,7 +111,7 @@ $SCRIPT_NAME $VERSION
 
 USAGE: $SCRIPT_NAME [-bhsvx] [-i <interpreter>] [-t <template>] <scriptfile>
 
-Make new shell script executable file from template.
+Make new executable shell script file from template.
 
 If the file exists, make it executable.
 
