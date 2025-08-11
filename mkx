@@ -168,7 +168,7 @@ _template() {
 	fi
 
 	if [ -f "$NEW_SCRIPT" ]; then
-		_echo "Making file exectuable: $NEW_SCRIPT"
+		_echo "Making file executable: $NEW_SCRIPT"
 	fi
 
 	date="$(date +'%Y-%m-%d %H:%M:%S %Z')"
