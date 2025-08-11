@@ -16,7 +16,9 @@ mkx_main() {
 	SCRIPT_NAME="$(basename "$SCRIPT_PATH")"
 	SCRIPT_DIR="$(dirname "$SCRIPT_PATH")"
 
+	CHMOD=0
 	BARE=0
+	FORCE=0
 	INTERPRETER='/usr/bin/env bash'
 	TEMPLATE_NAME='default'
 
@@ -25,9 +27,10 @@ mkx_main() {
 
 	[ $# -lt 1 ] && _help && return
 
-	while getopts bhi:lst:v opt; do
+	while getopts bfhi:lst:vx opt; do
 		case $opt in
 		b) TEMPLATE_NAME='bare' ;;
+		f) FORCE=1 ;;
 		h) _help && return ;;
 		i)
 			TEMPLATE_NAME='bare'
@@ -39,6 +42,7 @@ mkx_main() {
 			;;
 		t) TEMPLATE_NAME="$OPTARG" ;;
 		v) _version && return ;;
+		x) CHMOD=1 ;;
 		*) _invalid_opt ;;
 		esac
 	done
@@ -51,9 +55,19 @@ mkx_main() {
 
 	shift
 
+	if [ $CHMOD -ne 0 ]; then
+		if [ -f "$NEW_SCRIPT" ]; then
+			_echo "Making file executable: $NEW_SCRIPT"
+			_chmod "$NEW_SCRIPT"
+		else
+			_fatal $E_EXISTS "File does not exist: $NEW_SCRIPT"
+		fi
+		return
+	fi
+
 	_template
 
-	chmod a+x "$NEW_SCRIPT"
+	_chmod "$NEW_SCRIPT"
 	_echo "$NEW_SCRIPT"
 	_exit
 }
@@ -85,6 +99,10 @@ _find_template() {
 	done
 }
 
+_chmod() {
+	chmod a+x "$1"
+}
+
 _echo() {
 	echo "$@"
 }
@@ -113,11 +131,11 @@ USAGE: $SCRIPT_NAME [-bhsvx] [-i <interpreter>] [-t <template>] <scriptfile>
 
 Make new executable shell script file from template.
 
-If the file exists, make it executable.
-
 OPTIONS:
 
 	-b        Only write a bare script with only the shebang line, without template.
+
+	-f        Force output file override.
 
 	-h        Show this help screen.
 
@@ -128,6 +146,8 @@ OPTIONS:
 	-t        Specify template file. If not specified, uses 'default'.
 
 	-v        Show script name and version number.
+
+	-x        Make existing file executable without writing anything.
 
 USAGE
 }
@@ -156,6 +176,18 @@ _template() {
 
 	local mo="$(_find_mo)"
 	[ -z "$mo" ] && _fatal $E_NO_MO_LIB "No mustache (mo) script found."
+
+	if [ -f "$NEW_SCRIPT" ] && [ $FORCE -eq 0 ]; then
+		printf "File exists. Override? [y/N] "
+		read -n 1 -r reply
+		echo
+
+		if [[ "$reply" =~ ^[Yy]$ ]]; then
+			echo "Overwriting..."
+		else
+			echo "Cancelled."
+		fi
+	fi
 
 	(
 		# shellcheck source=lib/mo

@@ -12,6 +12,9 @@ creates a new executable shell script file from a template.
 .B \-b
 Only write a bare script with only the shebang line, without template.
 .TP
+.B \-f
+Force overwriting the file if it already exists.
+.TP
 .B \-h
 Show help screen.
 .TP
@@ -26,6 +29,9 @@ Specify the template to use.
 .TP
 .B \-v
 Show the version number.
+.TP
+.B \-x
+Make existing file executable, like doing \fIchmod a+x\fT. This is only provided as a convenience and will not output new files or change any existing ones.
 .SH TEMPLATES
 mkx uses Mustache templates to generate scripts. The templates have the extension of \fI.mustache\fR
 and they are looked for in the following directories:
