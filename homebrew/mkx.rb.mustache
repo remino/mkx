@@ -1,26 +1,26 @@
 class {{class_name}} < Formula
-	desc "{{description}}"
-	homepage "{{homepage}}"
-	url "{{url}}"
-	sha256 "{{sha256}}"
-	version "{{version}}"
-	license "{{license}}"
+  desc "{{description}}"
+  homepage "{{homepage}}"
+  url "{{url}}"
+  sha256 "{{sha256}}"
+  version "{{version}}"
+  license "{{license}}"
 
-	def install
-		libexec.install "{{name}}"
-		lib.install Dir["lib/*"]
-		(pkgshare/"templates").install Dir["templates/*"]
-		man1.install "man/{{name}}.1"
+  def install
+    libexec.install "{{name}}"
+    lib.install Dir["lib/*"]
+    (pkgshare/"templates").install Dir["templates/*"]
+    man1.install "man/{{name}}.1"
 
-		(bin/"{{name}}").write <<~EOS
-			#!/usr/bin/env bash
-			export MKX_LIB_DIR="#{lib}"
-			export MKX_TEMPLATES_DIR="#{pkgshare}/templates"
-			exec "#{libexec}/{{name}}" "$@"
-		EOS
-	end
+    (bin/"{{name}}").write <<~EOS
+      #!/usr/bin/env bash
+      export MKX_LIB_DIR="#{lib}"
+      export MKX_TEMPLATES_DIR="#{pkgshare}/templates"
+      exec "#{libexec}/{{name}}" "$@"
+    EOS
+  end
 
-	test do
-		system "#{bin}/{{name}}", "-v"
-	end
+  test do
+    system "#{bin}/{{name}}", "-v"
+  end
 end
