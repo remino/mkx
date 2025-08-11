@@ -10,6 +10,7 @@ mkx_main() {
 	E_ARGS=16
 	E_EXISTS=17
 	E_NO_TEMPLATE=18
+	E_NO_MO_LIB=19
 
 	SCRIPT_PATH="$(readlink -f "$0")"
 	SCRIPT_NAME="$(basename "$SCRIPT_PATH")"
@@ -19,8 +20,8 @@ mkx_main() {
 	INTERPRETER='/usr/bin/env bash'
 	TEMPLATE_NAME='default'
 
-	[ -z "$MKX_LIB_DIR" ] && MKX_LIB_DIR="$SCRIPT_DIR/lib"
-	[ -z "$MKX_TEMPLATES_DIR" ] && MKX_TEMPLATES_DIR="$SCRIPT_DIR/templates"
+	: "${MKX_LIB_DIR:=$SCRIPT_DIR/lib}"
+	: "${MKX_TEMPLATES_DIR:=}"
 
 	[ $# -lt 1 ] && _help && return
 
@@ -57,11 +58,24 @@ mkx_main() {
 	_exit
 }
 
+_find_mo() {
+	for filepath in \
+		"$MKX_LIB_DIR/mo" \
+		"$(dirname "$SCRIPT_DIR")/lib/mo"; do
+		if [ -x "$filepath" ]; then
+			echo "$filepath"
+			return
+		fi
+	done
+}
+
 _find_template() {
 	template_name="$1"
 
 	for filepath in \
 		"$MKX_TEMPLATES_DIR/$template_name.mustache" \
+		"$SCRIPT_DIR/templates/$template_name.mustache" \
+		"$(dirname "$SCRIPT_DIR")/share/$SCRIPT_NAME/templates/$template_name.mustache" \
 		"${XDG_CONFIG_HOME:-$HOME/.config}/mkx/templates/$template_name.mustache" \
 		"$1"; do
 		if [ -f "$filepath" ]; then
@@ -140,9 +154,12 @@ _template() {
 
 	date="$(date +'%Y-%m-%d %H:%M:%S %Z')"
 
+	local mo="$(_find_mo)"
+	[ -z "$mo" ] && _fatal $E_NO_MO_LIB "No mustache (mo) script found."
+
 	(
 		# shellcheck source=lib/mo
-		source "$MKX_LIB_DIR/mo"
+		source "$mo"
 
 		export script_name="$new_script_name"
 		export script_name_sc="$new_script_name_sc"

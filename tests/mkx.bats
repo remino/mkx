@@ -1,9 +1,13 @@
 #!/usr/bin/env bats
 
 teardown() {
-	[ -z "$OUTPUT_FILE" ] && return 0
-	[ ! -f "$OUTPUT_FILE" ] && return 0
-	rm -f "$OUTPUT_FILE"
+	if [ -n "$OUTPUT_FILE" ]; then
+		rm -f "$OUTPUT_FILE"
+	fi
+
+	if [ -n "$OUTPUT_DIR" ]; then
+		rm -rf "$OUTPUT_DIR"
+	fi
 }
 
 @test "shows version" {
@@ -44,6 +48,62 @@ teardown() {
 	[ "$(wc -l <"$OUTPUT_FILE")" -gt 2 ]
 	[ -x "$OUTPUT_FILE" ]
 	[ -f "$OUTPUT_FILE" ]
+}
+
+@test "searches for template in template directory adjacent to script" {
+	OUTPUT_DIR="$(mktemp -d)"
+	NEW_SCRIPT="$OUTPUT_DIR/script.sh"
+
+	cp ./mkx "$OUTPUT_DIR/mkx"
+	mkdir -p "$OUTPUT_DIR/templates"
+	cp -r ./lib "$OUTPUT_DIR/lib"
+	cp ./templates/default.mustache "$OUTPUT_DIR/templates/custom.mustache"
+	run "$OUTPUT_DIR/mkx" -t custom "$NEW_SCRIPT"
+
+	[ "$status" -eq 0 ]
+	[ "$(head -n 1 "$NEW_SCRIPT")" = "#!/usr/bin/env bash" ]
+	[ "$(wc -l <"$NEW_SCRIPT")" -gt 2 ]
+	[ -x "$NEW_SCRIPT" ]
+	[ -f "$NEW_SCRIPT" ]
+}
+
+@test "searches for template in system share templates directory" {
+	OUTPUT_DIR="$(mktemp -d)"
+	NEW_SCRIPT="$OUTPUT_DIR/script.sh"
+
+	mkdir -p "$OUTPUT_DIR/bin"
+	mkdir -p "$OUTPUT_DIR/share/mkx/templates"
+	cp ./mkx "$OUTPUT_DIR/bin/mkx"
+	cp -r ./lib "$OUTPUT_DIR/lib"
+	cp ./templates/default.mustache "$OUTPUT_DIR/share/mkx/templates/custom.mustache"
+	run "$OUTPUT_DIR/bin/mkx" -t custom "$NEW_SCRIPT"
+
+	[ "$status" -eq 0 ]
+	[ "$(head -n 1 "$NEW_SCRIPT")" = "#!/usr/bin/env bash" ]
+	[ "$(wc -l <"$NEW_SCRIPT")" -gt 2 ]
+	[ -x "$NEW_SCRIPT" ]
+	[ -f "$NEW_SCRIPT" ]
+}
+
+@test "searches for template in custom directory" {
+	OUTPUT_DIR="$(mktemp -d)"
+	NEW_SCRIPT="$OUTPUT_DIR/script.sh"
+	MKX_TEMPLATES_DIR="$OUTPUT_DIR/my_templates"
+
+	mkdir -p "$OUTPUT_DIR/bin"
+	mkdir -p "$MKX_TEMPLATES_DIR"
+	cp ./mkx "$OUTPUT_DIR/bin/mkx"
+	cp -r ./lib "$OUTPUT_DIR/lib"
+	cp ./templates/default.mustache "$MKX_TEMPLATES_DIR/custom.mustache"
+
+	export MKX_TEMPLATES_DIR
+	run "$OUTPUT_DIR/bin/mkx" -t custom "$NEW_SCRIPT"
+
+	[ "$status" -eq 0 ]
+	[ "$(head -n 1 "$NEW_SCRIPT")" = "#!/usr/bin/env bash" ]
+	[ "$(wc -l <"$NEW_SCRIPT")" -gt 2 ]
+	[ -x "$NEW_SCRIPT" ]
+	[ -f "$NEW_SCRIPT" ]
 }
 
 @test "fails to generate script from non-existing template" {
