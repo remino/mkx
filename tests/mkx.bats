@@ -142,10 +142,40 @@ teardown() {
 @test "overwrites existing file when -f is set" {
 	OUTPUT_FILE="$(mktemp)"
 	rm -f "$OUTPUT_FILE"
-	run ./mkx -b -s "$OUTPUT_FILE"
+	run ./mkx -b "$OUTPUT_FILE"
 	run ./mkx -b -s -f "$OUTPUT_FILE"
 
 	[ "$status" -eq 0 ]
+	[ "$(head -n 1 "$OUTPUT_FILE")" = "#!/bin/sh" ]
+	[ "$(wc -l <"$OUTPUT_FILE")" -eq 2 ]
+	[ -x "$OUTPUT_FILE" ]
+	[ -f "$OUTPUT_FILE" ]
+}
+
+@test "overwrites existing file when user confirms override" {
+	OUTPUT_FILE="$(mktemp)"
+	rm -f "$OUTPUT_FILE"
+	run ./mkx -b "$OUTPUT_FILE"
+	run bash -c 'printf "y\n" | ./mkx -b -s "$0"' "$OUTPUT_FILE"
+
+	[ "$status" -eq 0 ]
+	[[ "$output" == *"File exists. Overwrite?"* ]]
+	[[ "$output" == *"Overwriting..."* ]]
+	[ "$(head -n 1 "$OUTPUT_FILE")" = "#!/bin/sh" ]
+	[ "$(wc -l <"$OUTPUT_FILE")" -eq 2 ]
+	[ -x "$OUTPUT_FILE" ]
+	[ -f "$OUTPUT_FILE" ]
+}
+
+@test "cancels overwrite when user declines" {
+	OUTPUT_FILE="$(mktemp)"
+	rm -f "$OUTPUT_FILE"
+	run ./mkx -b -s "$OUTPUT_FILE"
+	run bash -c 'printf "n\n" | ./mkx -b "$0"' "$OUTPUT_FILE"
+
+	[ "$status" -eq 0 ]
+	[[ "$output" == *"File exists. Overwrite?"* ]]
+	[[ "$output" == *"Cancelled."* ]]
 	[ "$(head -n 1 "$OUTPUT_FILE")" = "#!/bin/sh" ]
 	[ "$(wc -l <"$OUTPUT_FILE")" -eq 2 ]
 	[ -x "$OUTPUT_FILE" ]

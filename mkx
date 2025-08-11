@@ -177,7 +177,7 @@ _template() {
 	[ -z "$mo" ] && _fatal $E_NO_MO_LIB "No mustache (mo) script found."
 
 	if [ -f "$NEW_SCRIPT" ] && [ $FORCE -eq 0 ]; then
-		printf "File exists. Override? [y/N] "
+		printf "File exists. Overwrite? [y/N] "
 		read -n 1 -r reply
 		echo
 
@@ -185,6 +185,7 @@ _template() {
 			echo "Overwriting..."
 		else
 			echo "Cancelled."
+			return
 		fi
 	fi
 
